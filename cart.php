@@ -2,6 +2,7 @@
 <?php include 'database.php'; ?>
 
 <?php
+error_reporting( error_reporting() & ~E_NOTICE );
 
 session_start();
 
@@ -39,6 +40,22 @@ if  ( isset ( $_SESSION['cart_content'] )  ){
       unset  ( $_SESSION['cart_content'] );
     }
 }
+
+/////////////////////
+// Calculate total price
+/////////////////////
+
+$total_order = 0;
+    $cart_array = explode( ',', $_SESSION['cart_content'] );
+
+    foreach  ( $cart_array as $item ) {
+        $query = "SELECT * FROM cart_producten WHERE id='" . $item . "' ";
+                //Try to execute the SQL query
+        $query_result = $conn->query( $query );
+                // Return the result of the query
+        $product = $query_result->fetch(PDO::FETCH_ASSOC);
+        $total_order += $product['price'];
+    }
  ?>
 
  <!-- Below is html -->
@@ -68,11 +85,12 @@ if  ( isset ( $_SESSION['cart_content'] )  ){
 
          <div class="col-md-12 col-xs-12 productlisting">
            <p class="col-md-4"><?php echo $product['name']; ?></p>
-           <p class="col-md-4">€ <?php echo $product['price']; ?></p>
+           <p class="col-md-4">Price: € <?php echo $product['price']; ?></p>
            <a class="col-md-4" href="./cart.php?remove=true&pid=<?php echo $product['id']; ?>">Remove</a>
          </div>
 
          <?php
+
        }
      }
 
@@ -82,10 +100,12 @@ if  ( isset ( $_SESSION['cart_content'] )  ){
   </div>
 
   <div class="row">
+    <p>Totaal: € <?php echo $total_order; ?></p>
+    <a href="shop.php" style="text-decoration: none;">Verder winkelen</a>
     <form action="bestelling.php" method="POST">
       <div class="form-group">
-        <input placeholder="name" type="name" name="name">
-        <input placeholder="email" type="email" name="email">
+        <input placeholder="name" type="name" name="name" required>
+        <input placeholder="email" type="email" name="email" required>
         <input class="btn btn-default" type="submit" value="Order">
       </div>
     </form>
