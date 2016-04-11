@@ -114,7 +114,7 @@ if ( isset( $_SESSION['cart_content'] ) ) {
 
  <div class="container">
     <div class="row">
-    <p>Order price: € <?php echo $total_order; ?>
+    <p>Order price: € <?php echo $total_order; ?></p>
     <p>Thank you for your order <?php echo $_POST['name']; ?>.</p>
     <p>Your order has been recorded as order number <?php echo $lastOrderId; ?>.</p>
   </div>
